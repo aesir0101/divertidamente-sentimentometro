@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sentimentômetro - Divertidamente</title>
+
+    <!-- Manifest para PWA -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Ícone do app -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/616/616408.png" />
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Fonte -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            transition: background 1s ease;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #c8f7c5, #a5d6a7);
+            background-size: 200% 200%;
+            animation: gradientMove 8s ease infinite;
+            text-align: center;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        h1 {
+            font-size: 2.8em;
+            font-weight: 600;
+            animation: fadeIntro 2s ease forwards, bounce 1.5s infinite;
+            color: #333;
+            opacity: 0;
+        }
+        @keyframes fadeIntro {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .p-4 {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.6);
+        }
+        select, button {
+            padding: 10px;
+            font-size: 1.2em;
+            margin: 10px;
+        }
+        #imagem {
+            display: none;
+            margin-top: 20px;
+            width: 320px;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            transition: transform 0.4s ease, box-shadow 0.6s ease;
+        }
+        #imagem.show {
+            display: block;
+            animation: fadeIn 0.8s ease forwards, floaty 3s ease-in-out infinite;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes floaty {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .message {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
+            opacity: 0;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.7);
+            transition: opacity 0.5s ease, transform 0.3s ease;
+        }
+        .message.show {
+            opacity: 1;
+            transform: scale(1.02);
+        }
+        button {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        button.pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); }
+            70% { box-shadow: 0 0 15px 10px rgba(255,255,255,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+        }
+        #imagem:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+        @media (max-width: 600px) {
+            #imagem {
+                width: 90%;
+            }
+            select, button {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container d-flex justify-content-center align-items-center" style="height: 100%;">
+        <div class="p-4 rounded-lg shadow-lg bg-white bg-opacity-75">
+            <h1 class="fade-in">Como está seu humor?</h1>
+
+            <select id="humor" class="form-control w-50 mx-auto">
+                <option value="">Selecione...</option>
+                <option value="feliz">😀 Feliz</option>
+                <option value="triste">😢 Triste</option>
+                <option value="nojo">🤢 Nojo</option>
+                <option value="raiva">😠 Raiva</option>
+                <option value="ansiedade">😨 Ansiedade</option>
+            </select>
+
+            <button id="btn" class="btn btn-primary mt-3">Confirmar</button>
+
+            <p id="mensagem" class="message"></p>
+            <div id="imagem-container" style="display: flex; justify-content: center;">
+                <img id="imagem" src="" alt="Humor">
+            </div>
+            <footer style="margin-top:20px; font-size:0.9em; color:#444;">
+                <em>“Cada emoção é um lembrete de que você está vivo.” 💭</em>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        const selectHumor = document.getElementById("humor");
+        const btn = document.getElementById("btn");
+        const mensagem = document.getElementById("mensagem");
+        const imagem = document.getElementById("imagem");
+        const title = document.querySelector("h1");
+        const clickSound = new Audio("https://www.soundjay.com/buttons/sounds/button-3.mp3");
+
+        function mostraMensagem() {
+            const valor = selectHumor.value;
+            mensagem.classList.remove("show");
+            imagem.classList.remove("show");
+
+            if (!valor) {
+                mensagem.textContent = "Escolha um humor antes de confirmar! 😊";
+                mensagem.classList.add("show");
+                imagem.style.display = "none";
+                return;
+            }
+
+            let emoji = '', texto = '', bgColor = '', btnColor = '';
+
+            switch (valor) {
+                case "feliz":
+                    emoji = "😍";
+                    texto = "Que bom que você está feliz! Continue espalhando alegria!";
+                    bgColor = "linear-gradient(135deg, #fff176, #ffd54f)";
+                    imagem.src = "https://cdn.culturagenial.com/imagens/alegria-cke.jpg?class=article";
+                    btnColor = "#FFD700";
+                    break;
+                case "triste":
+                    emoji = "😢";
+                    texto = "Sinto muito que você está triste. Estamos aqui pra você 💙";
+                    bgColor = "linear-gradient(135deg, #64b5f6, #2196f3)";
+                    imagem.src = "https://blogmaniadebrincar.com.br/wp-content/uploads/2025/01/Tristeza-Divertida-Mente-2-1024x576.jpg";
+                    btnColor = "#007BFF";
+                    break;
+                case "nojo":
+                    emoji = "🤢";
+                    texto = "Entendo, o nojo também é sabedoria do corpo!";
+                    bgColor = "linear-gradient(135deg, #81c784, #388e3c)";
+                    imagem.src = "https://i0.wp.com/essenciaexponencial.com.br/wp-content/uploads/2023/11/nojinho.jpeg?resize=800%2C800&ssl=1";
+                    btnColor = "#28A745";
+                    break;
+                case "raiva":
+                    emoji = "😠";
+                    texto = "Cuidado com a raiva! Respire fundo e transforme em foco. 💪";
+                    bgColor = "linear-gradient(135deg, #ef5350, #c62828)";
+                    imagem.src = "https://vidaeacao.com.br/wp-content/uploads/2024/07/raiva.png";
+                    btnColor = "#DC3545";
+                    break;
+                case "ansiedade":
+                    emoji = "😨";
+                    texto = "Acalme-se... até o vento precisa de pausa. 🌬️";
+                    bgColor = "linear-gradient(135deg, #f8bbd0, #f48fb1)";
+                    imagem.src = "https://catracalivre.com.br/wp-content/uploads/2024/04/poster-divertida-mente-2-vergonha.png";
+                    btnColor = "#E83E8C";
+                    break;
+            }
+
+            document.body.style.background = bgColor;
+            btn.style.backgroundColor = btnColor;
+            btn.style.animation = "pulse 2s infinite";
+            title.style.color = btnColor;
+
+            mensagem.innerHTML = `<span style='font-size:1.5em'>${emoji}</span> ${texto}`;
+            mensagem.style.boxShadow = `0 0 15px ${btnColor}`;
+
+            setTimeout(() => imagem.classList.add("show"), 200);
+            imagem.style.display = 'block';
+            mensagem.classList.add("show");
+            title.style.opacity = 1;
+
+            clickSound.play();
+
+            // Reset automático após 10s
+            setTimeout(() => {
+                document.body.style.background = "linear-gradient(135deg, #c8f7c5, #a5d6a7)";
+                mensagem.classList.remove("show");
+                imagem.classList.remove("show");
+                title.style.color = "#333";
+                btn.style.animation = "none";
+                imagem.style.display = "none";
+            }, 10000);
+        }
+
+        btn.addEventListener("click", () => {
+            btn.style.transform = "scale(0.95)";
+            setTimeout(() => btn.style.transform = "scale(1)", 150);
+            mostraMensagem();
+        });
+    </script>
+</body>
+</html>
