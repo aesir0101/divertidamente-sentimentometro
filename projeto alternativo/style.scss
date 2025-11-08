@@ -1,0 +1,181 @@
+// ======================
+// Variáveis
+// ======================
+$background-image: url('https://forbes.com.br/wp-content/uploads/2024/06/Life_Central-de-Controle-de-_Divertida-Mente_-na-hospedagem-do-Airnb-1024x683.jpg');
+$main-color: #111;
+$glow-colors: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+$container-bg: rgba(0, 0, 0, 0.55);
+$border-radius: 10px;
+$gif-width: 220px;
+$font-family: 'Poppins', sans-serif;
+$font-size-base: 1.1em;
+$font-size-footer: 0.9em;
+$container-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+$backdrop-blur: 10px;
+$fade-duration: 1s;
+$glow-duration: 20s;
+
+// ======================
+// Mixins
+// ======================
+@mixin glow-effect($colors) {
+  &:before {
+    content: '';
+    position: absolute;
+    top: -2px; 
+    left: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    border-radius: $border-radius;
+    z-index: -1;
+    background: $colors;
+    background-size: 400%;
+    filter: blur(5px);
+    animation: glowing $glow-duration linear infinite;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+  }
+}
+
+// ======================
+// Body e container
+// ======================
+body {
+  background: $background-image no-repeat center center fixed;
+  background-size: cover;
+  height: 100vh;
+  font-family: $font-family;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+.container {
+  backdrop-filter: blur($backdrop-blur);
+  background: $container-bg;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: $container-shadow;
+  max-width: 450px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 1.5s ease-out;
+
+  h1 {
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  }
+
+  select {
+    margin-top: 15px;
+    border-radius: $border-radius;
+    width: 75%;
+    padding: 8px;
+    font-size: $font-size-base;
+  }
+
+  footer {
+    margin-top: 20px;
+    font-size: $font-size-footer;
+    color: #f0f0f0;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
+}
+
+// ======================
+// Botão Glow
+// ======================
+.glow-on-hover {
+  width: 180px;
+  height: 45px;
+  border: none;
+  outline: none;
+  color: #fff;
+  background: $main-color;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: $border-radius;
+  font-weight: 600;
+  margin-top: 20px;
+
+  @include glow-effect($glow-colors);
+
+  &:hover:before {
+    opacity: 1;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: $main-color;
+    left: 0;
+    top: 0;
+    border-radius: $border-radius;
+    z-index: -1;
+  }
+
+  &:active {
+    color: #000;
+  }
+}
+
+// ======================
+// GIF com glow
+// ======================
+#imagem-container {
+  position: relative;
+
+  #imagem {
+    width: $gif-width;
+    margin-top: 15px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity $fade-duration ease, transform $fade-duration ease;
+    border-radius: $border-radius;
+    position: relative;
+
+    &.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @include glow-effect($glow-colors);
+  }
+}
+
+// ======================
+// Mensagens
+// ======================
+.message {
+  opacity: 0;
+  transition: opacity $fade-duration ease;
+  font-size: $font-size-base;
+  margin-top: 10px;
+  font-style: italic;
+
+  &.show {
+    opacity: 1;
+  }
+}
+
+// ======================
+// Animações
+// ======================
+@keyframes glowing {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

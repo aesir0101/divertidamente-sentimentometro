@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sentimentômetro - Divertidamente</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/616/616408.png" />
+
+  <!-- Bootstrap e Fonte -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS Personalizado -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="overlay" id="overlay"></div>
+
+  <main class="container d-flex justify-content-center align-items-center" style="height: 100%;">
+    <div class="p-4 rounded-lg shadow-lg">
+      <h1>Como está seu humor?</h1>
+
+      <select id="humor" class="form-control w-75 mx-auto">
+        <option value="">Selecione...</option>
+        <option value="feliz">😀 Feliz</option>
+        <option value="triste">😢 Triste</option>
+        <option value="nojo">🤢 Nojo</option>
+        <option value="raiva">😠 Raiva</option>
+        <option value="medo">😱 Medo</option>
+        <option value="ansiedade">😰 Ansiedade</option>
+        <option value="inveja">🫣 Inveja</option>
+        <option value="tedio">😒 Tédio</option>
+        <option value="vergonha">😳 Vergonha</option>
+      </select>
+
+      <p id="mensagem" class="message"></p>
+
+      <div id="imagem-container" style="display: flex; justify-content: center;">
+        <img id="imagem" src="" alt="Humor">
+      </div>
+
+      <button id="btn" class="glow-on-hover" type="button">Confirmar</button>
+
+      <footer style="margin-top:20px; font-size:0.9em; color:#fff;">
+        <em>“Cada emoção é um lembrete de que você está vivo.” 💭</em>
+      </footer>
+    </div>
+  </main>
+
+  <!-- JS Personalizado -->
+  <script src="script.js" defer></script>
+
+  <!-- Registrar Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('Service Worker registrado!', reg))
+        .catch(err => console.log('Erro ao registrar SW:', err));
+      });
+    }
+  </script>
+</body>
+</html>

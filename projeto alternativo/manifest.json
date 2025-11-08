@@ -1,0 +1,23 @@
+{
+  "name": "Sentimentômetro - Divertidamente",
+  "short_name": "Sentimentômetro",
+  "description": "Descubra e registre suas emoções com um toque de Divertidamente! 💭",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#a5d6a7",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/616/616408.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/616/616408.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
